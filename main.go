@@ -4,9 +4,21 @@ import "fmt"
 
 func main () {
         board := "_________"
-        printBoard(board)
-        newBoard := place(board, 5, SYMBOL_O)
-        printBoard(newBoard)
+
+        var winner rune
+        isGameOver := false 
+        for !isGameOver {
+                // todo 請玩家下棋
+
+                // 檢查遊戲是否結束
+                winner, isGameOver = checkGameOver(board)
+        }
+
+        if winner == SYMBOL_EMPTY {
+                fmt.Println("平手")
+        } else {
+                fmt.Printf("玩家 %c 獲勝\n", winner)
+        }
 }
 
 const (
@@ -34,4 +46,15 @@ func place(board string, position int, symbol rune) string {
         byteBoard := []byte(board)
         byteBoard[position-1] = byte(symbol)
         return string(byteBoard)
+}
+
+// isGameOver 返回兩個參數，代表(獲勝玩家, 遊戲是否結束)，若平手則回傳(SYMBOL_EMPTY, true)
+func checkGameOver(board string) (rune, bool) {
+        // todo 判斷垂直方向上是否有玩家獲勝
+        
+        // todo 判斷水平方向上是否有玩家獲勝
+
+        // todo 判斷對角方向上是否有玩家獲勝
+
+        return SYMBOL_EMPTY, false
 }
