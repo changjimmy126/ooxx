@@ -3,8 +3,10 @@ package main
 import "fmt"
 
 func main () {
-        board := "OO_XO_XOX"
+        board := "_________"
         printBoard(board)
+        newBoard := place(board, 5, SYMBOL_O)
+        printBoard(newBoard)
 }
 
 const (
@@ -26,4 +28,10 @@ func printBoard(board string) {
                     fmt.Println("+---+---+---+")
             }
         }
+}
+
+func place(board string, position int, symbol rune) string {
+        byteBoard := []byte(board)
+        byteBoard[position-1] = byte(symbol)
+        return string(byteBoard)
 }
