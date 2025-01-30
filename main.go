@@ -5,10 +5,23 @@ import "fmt"
 func main () {
         board := "_________"
 
-        var winner rune
-        isGameOver := false 
+		var winner rune
+        isGameOver := false
+
         for !isGameOver {
                 // todo 請玩家下棋
+				var newplace int
+				
+				fmt.Println("請選擇位置1~9")
+				fmt.Scan(&newplace)
+					if newplace < 1 || newplace > 9 {
+						fmt.Println("無效輸入，請重複")
+						continue
+					}
+			place(board , newplace , SYMBOL_O)
+			board = place(board, newplace, SYMBOL_O)
+				printBoard(board)
+				
 
                 // 檢查遊戲是否結束
                 winner, isGameOver = checkGameOver(board)
