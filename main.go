@@ -11,28 +11,32 @@ func main() {
 	var winner rune
 	isGameOver := false
 
+
 	for !isGameOver {
 		// todo 請玩家下棋
 		var newplace int
 		var err error
+		var newboard string
 		
 		fmt.Println("請選擇位置1~9")
 		fmt.Scan(&newplace)
 		
-		board , err = place(board, newplace, SYMBOL_O)
+		newboard , err = place(board, newplace, SYMBOL_O)
 			if err != nil {
-				fmt.Println("錯誤:", err)
+				fmt.Println(err)
 				continue
 			} else {
-				break
+				board = newboard
+				printBoard(board)
 			}
-	}
 
-		printBoard(board)
+		//printBoard(board)
 
 		// 檢查遊戲是否結束
 		winner, isGameOver = checkGameOver(board)
-	
+		continue
+		}
+		
 
 	if winner == SYMBOL_EMPTY {
 		fmt.Println("平手")
@@ -63,8 +67,8 @@ func printBoard(board string) {
 }
 
 func place(board string, position int, symbol rune) (string, error) {
-	if position < 1 || position > 9 {
-		return "", errors.New("選擇的位置不存在")
+	if position < 1 || position > len(board) {
+		return "",errors.New("選擇的位置不存在")
 	}
 	byteBoard := []byte(board)
 	byteBoard[position-1] = byte(symbol)
@@ -77,22 +81,22 @@ func place(board string, position int, symbol rune) (string, error) {
 func checkGameOver(board string) (rune, bool) {
 	// todo 判斷垂直方向上是否有玩家獲勝
 	for i := 0; i < 3; i++ {
-		if board[i] == board[i+3] && board[i+3] == board[i+6] {
+		if board[i] == board[i+3] && board[i+3] == board[i+6] && board[i] != '_'{
 			return rune(board[i]), true
 		}
 	}
 	// todo 判斷水平方向上是否有玩家獲勝
 	for i := 0; i < 3; i++ {
-		if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] {
+		if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3] != '_'{
 			return rune(board[i*3]), true
 		}
 	}
 	// todo 判斷對角方向上是否有玩家獲勝
-	if board[0] == board[4] && board[4] == board[8] {
+	if board[0] == board[4] && board[4] == board[8] && board[0] != '_'{
 		return rune(board[0]), true
-	} else if board[2] == board[4] && board[4] == board[6] {
+	} else if board[2] == board[4] && board[4] == board[6] && board[2] != '_'{
 		return rune(board[2]), true
 	}
-
+	
 	return SYMBOL_EMPTY, false
 }
