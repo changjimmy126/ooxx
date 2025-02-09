@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 )
 
 func main() {
@@ -11,32 +11,28 @@ func main() {
 	var winner rune
 	isGameOver := false
 
-
 	for !isGameOver {
 		// todo 請玩家下棋
 		var newplace int
 		var err error
 		var newboard string
-		
+
 		fmt.Println("請選擇位置1~9")
 		fmt.Scan(&newplace)
-		
-		newboard , err = place(board, newplace, SYMBOL_O)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			} else {
-				board = newboard
-				printBoard(board)
-			}
 
-		//printBoard(board)
+		newboard, err = place(board, newplace, SYMBOL_O)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		board = newboard
+		printBoard(board)
 
 		// 檢查遊戲是否結束
 		winner, isGameOver = checkGameOver(board)
 		continue
-		}
-		
+	}
 
 	if winner == SYMBOL_EMPTY {
 		fmt.Println("平手")
@@ -68,35 +64,34 @@ func printBoard(board string) {
 
 func place(board string, position int, symbol rune) (string, error) {
 	if position < 1 || position > len(board) {
-		return "",errors.New("選擇的位置不存在")
+		return "", errors.New("選擇的位置不存在")
 	}
 	byteBoard := []byte(board)
 	byteBoard[position-1] = byte(symbol)
 	return string(byteBoard), nil
-	
 
 }
 
 // isGameOver 返回兩個參數，代表(獲勝玩家, 遊戲是否結束)，若平手則回傳(SYMBOL_EMPTY, true)
 func checkGameOver(board string) (rune, bool) {
-	// todo 判斷垂直方向上是否有玩家獲勝
+	// 判斷垂直方向上是否有玩家獲勝
 	for i := 0; i < 3; i++ {
-		if board[i] == board[i+3] && board[i+3] == board[i+6] && board[i] != '_'{
+		if board[i] == board[i+3] && board[i+3] == board[i+6] && board[i] != SYMBOL_EMPTY {
 			return rune(board[i]), true
 		}
 	}
-	// todo 判斷水平方向上是否有玩家獲勝
+	// 判斷水平方向上是否有玩家獲勝
 	for i := 0; i < 3; i++ {
-		if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3] != '_'{
+		if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3] != SYMBOL_EMPTY {
 			return rune(board[i*3]), true
 		}
 	}
-	// todo 判斷對角方向上是否有玩家獲勝
-	if board[0] == board[4] && board[4] == board[8] && board[0] != '_'{
+	// 判斷對角方向上是否有玩家獲勝
+	if board[0] == board[4] && board[4] == board[8] && board[0] != SYMBOL_EMPTY {
 		return rune(board[0]), true
-	} else if board[2] == board[4] && board[4] == board[6] && board[2] != '_'{
+	} else if board[2] == board[4] && board[4] == board[6] && board[2] != SYMBOL_EMPTY {
 		return rune(board[2]), true
 	}
-	
+
 	return SYMBOL_EMPTY, false
 }
