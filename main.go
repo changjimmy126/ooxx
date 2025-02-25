@@ -13,7 +13,6 @@ func main() {
 	currentPlayer := SYMBOL_O
 	
 	for !isGameOver {
-		// todo 請玩家下棋
 		var newplace int
 		var err error
 		var newboard string
@@ -36,7 +35,6 @@ func main() {
 		board = newboard
 		printBoard(board)
 
-		// 檢查遊戲是否結束
 		winner, isGameOver = checkGameOver(board)
 		continue
 	}
