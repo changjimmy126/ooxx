@@ -10,7 +10,8 @@ func main() {
 
 	var winner rune
 	isGameOver := false
-
+	currentPlayer := SYMBOL_O
+	
 	for !isGameOver {
 		// todo 請玩家下棋
 		var newplace int
@@ -20,10 +21,16 @@ func main() {
 		fmt.Println("請選擇位置1~9")
 		fmt.Scan(&newplace)
 
-		newboard, err = place(board, newplace, SYMBOL_O)
+		newboard, err = place(board, newplace, currentPlayer)
+
 		if err != nil {
 			fmt.Println(err)
 			continue
+		}
+		if currentPlayer == SYMBOL_O {
+			currentPlayer = SYMBOL_X
+		} else {
+			currentPlayer = SYMBOL_O
 		}
 
 		board = newboard
