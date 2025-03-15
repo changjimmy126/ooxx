@@ -26,6 +26,7 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
+
 		if currentPlayer == SYMBOL_O {
 			currentPlayer = SYMBOL_X
 		} else {
@@ -71,6 +72,9 @@ func place(board string, position int, symbol rune) (string, error) {
 	if position < 1 || position > len(board) {
 		return "", errors.New("選擇的位置不存在")
 	}
+	if board[position-1] != SYMBOL_EMPTY {
+		return board, errors.New("該位置已被占用，請重新選擇!")
+	}
 	byteBoard := []byte(board)
 	byteBoard[position-1] = byte(symbol)
 	return string(byteBoard), nil
@@ -97,6 +101,13 @@ func checkGameOver(board string) (rune, bool) {
 	} else if board[2] == board[4] && board[4] == board[6] && board[2] != SYMBOL_EMPTY {
 		return rune(board[2]), true
 	}
+	//判斷棋盤是否已滿則平手
+	for i := 0; i<len(board); i++ {
+		if board[i] == SYMBOL_EMPTY {
+			return SYMBOL_EMPTY, false
+		}
+	}
 
-	return SYMBOL_EMPTY, false
+
+	return SYMBOL_EMPTY, true
 }
