@@ -5,13 +5,21 @@ import (
 	"fmt"
 )
 
+const (
+	SYMBOL_O     = 'O'
+	SYMBOL_X     = 'X'
+	SYMBOL_EMPTY = '_'
+)
+
 func main() {
 	board := "_________"
 
-	var winner rune
-	isGameOver := false
-	currentPlayer := SYMBOL_O
-	
+	var (
+		winner        rune
+		isGameOver    bool
+		currentPlayer = SYMBOL_O
+	)
+
 	for !isGameOver {
 		var newplace int
 		var err error
@@ -26,6 +34,7 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
+
 		if currentPlayer == SYMBOL_O {
 			currentPlayer = SYMBOL_X
 		} else {
@@ -46,12 +55,6 @@ func main() {
 	}
 }
 
-const (
-	SYMBOL_O     = 'O'
-	SYMBOL_X     = 'X'
-	SYMBOL_EMPTY = '_'
-)
-
 func printBoard(board string) {
 	fmt.Println("+---+---+---+")
 	for i := 0; i < len(board); i++ {
@@ -71,10 +74,15 @@ func place(board string, position int, symbol rune) (string, error) {
 	if position < 1 || position > len(board) {
 		return "", errors.New("選擇的位置不存在")
 	}
+
+	if board[position-1] != SYMBOL_EMPTY {
+		return board, errors.New("該位置已被占用，請重新選擇!")
+	}
+
 	byteBoard := []byte(board)
 	byteBoard[position-1] = byte(symbol)
-	return string(byteBoard), nil
 
+	return string(byteBoard), nil
 }
 
 // isGameOver 返回兩個參數，代表(獲勝玩家, 遊戲是否結束)，若平手則回傳(SYMBOL_EMPTY, true)
@@ -85,12 +93,14 @@ func checkGameOver(board string) (rune, bool) {
 			return rune(board[i]), true
 		}
 	}
+
 	// 判斷水平方向上是否有玩家獲勝
 	for i := 0; i < 3; i++ {
 		if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3] != SYMBOL_EMPTY {
 			return rune(board[i*3]), true
 		}
 	}
+
 	// 判斷對角方向上是否有玩家獲勝
 	if board[0] == board[4] && board[4] == board[8] && board[0] != SYMBOL_EMPTY {
 		return rune(board[0]), true
@@ -98,5 +108,12 @@ func checkGameOver(board string) (rune, bool) {
 		return rune(board[2]), true
 	}
 
-	return SYMBOL_EMPTY, false
+	//判斷棋盤是否已滿則平手
+	for i := 0; i < len(board); i++ {
+		if board[i] == SYMBOL_EMPTY {
+			return SYMBOL_EMPTY, false
+		}
+	}
+
+	return SYMBOL_EMPTY, true
 }
