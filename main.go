@@ -1,119 +1,27 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-)
 
-const (
-	SYMBOL_O     = 'O'
-	SYMBOL_X     = 'X'
-	SYMBOL_EMPTY = '_'
+	game "ooxx/ooxx"
 )
 
 func main() {
-	board := "_________"
+	game := game.NewGame()
 
-	var (
-		winner        rune
-		isGameOver    bool
-		currentPlayer = SYMBOL_O
-	)
-
-	for !isGameOver {
+	for !game.CheckGameOver() {
 		var newplace int
-		var err error
-		var newboard string
 
 		fmt.Println("請選擇位置1~9")
 		fmt.Scan(&newplace)
 
-		newboard, err = place(board, newplace, currentPlayer)
-
-		if err != nil {
+		if err := game.Place(newplace, game.CurrentPlayer); err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		if currentPlayer == SYMBOL_O {
-			currentPlayer = SYMBOL_X
-		} else {
-			currentPlayer = SYMBOL_O
-		}
-
-		board = newboard
-		printBoard(board)
-
-		winner, isGameOver = checkGameOver(board)
-		continue
+		fmt.Println(game.Board)
 	}
 
-	if winner == SYMBOL_EMPTY {
-		fmt.Println("平手")
-	} else {
-		fmt.Printf("玩家 %c 獲勝\n", winner)
-	}
-}
-
-func printBoard(board string) {
-	fmt.Println("+---+---+---+")
-	for i := 0; i < len(board); i++ {
-		if board[i] == SYMBOL_EMPTY {
-			fmt.Printf("|   ")
-		} else {
-			fmt.Printf("| %c ", board[i])
-		}
-		if (i+1)%3 == 0 {
-			fmt.Println("|")
-			fmt.Println("+---+---+---+")
-		}
-	}
-}
-
-func place(board string, position int, symbol rune) (string, error) {
-	if position < 1 || position > len(board) {
-		return "", errors.New("選擇的位置不存在")
-	}
-
-	if board[position-1] != SYMBOL_EMPTY {
-		return board, errors.New("該位置已被占用，請重新選擇!")
-	}
-
-	byteBoard := []byte(board)
-	byteBoard[position-1] = byte(symbol)
-
-	return string(byteBoard), nil
-}
-
-// isGameOver 返回兩個參數，代表(獲勝玩家, 遊戲是否結束)，若平手則回傳(SYMBOL_EMPTY, true)
-func checkGameOver(board string) (rune, bool) {
-	// 判斷垂直方向上是否有玩家獲勝
-	for i := 0; i < 3; i++ {
-		if board[i] == board[i+3] && board[i+3] == board[i+6] && board[i] != SYMBOL_EMPTY {
-			return rune(board[i]), true
-		}
-	}
-
-	// 判斷水平方向上是否有玩家獲勝
-	for i := 0; i < 3; i++ {
-		if board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3] != SYMBOL_EMPTY {
-			return rune(board[i*3]), true
-		}
-	}
-
-	// 判斷對角方向上是否有玩家獲勝
-	if board[0] == board[4] && board[4] == board[8] && board[0] != SYMBOL_EMPTY {
-		return rune(board[0]), true
-	} else if board[2] == board[4] && board[4] == board[6] && board[2] != SYMBOL_EMPTY {
-		return rune(board[2]), true
-	}
-
-	//判斷棋盤是否已滿則平手
-	for i := 0; i < len(board); i++ {
-		if board[i] == SYMBOL_EMPTY {
-			return SYMBOL_EMPTY, false
-		}
-	}
-
-	return SYMBOL_EMPTY, true
+	fmt.Println(game.GetWinner())
 }
