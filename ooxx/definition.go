@@ -10,3 +10,7 @@ const (
 	STATE_IN_PROGRESS = "in_progress"
 	STATE_GAME_OVER   = "game_over"
 )
+
+const (
+	INIT_BOARD = "_________"
+)
